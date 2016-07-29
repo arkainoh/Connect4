@@ -2,6 +2,7 @@ package body;
 
 import java.awt.BorderLayout;
 import java.awt.Button;
+import java.awt.CheckboxMenuItem;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -46,9 +47,9 @@ public class Connect4 extends Frame implements BoardWindow
 	
 	private MenuItem menuPlayerFirst;
 	private MenuItem menuAIFirst;
-	private MenuItem menuDifficultyLow; // 저장
-	private MenuItem menuDifficultyModerate; // 다른 이름으로 저장
-	private MenuItem menuDifficultyHigh; // 인쇄
+	private CheckboxMenuItem menuDifficultyLow; // 저장
+	private CheckboxMenuItem menuDifficultyModerate; // 다른 이름으로 저장
+	private CheckboxMenuItem menuDifficultyHigh; // 인쇄
 	
 	Label statL;
 	
@@ -77,9 +78,9 @@ public class Connect4 extends Frame implements BoardWindow
 		menuDifficulty = new Menu("Difficulty");
 		menuBar.add(menuDifficulty);
 		//sub menu로 상, 중, 하 - 체크 그룹으로 만들기!!!
-		menuDifficultyLow = new MenuItem("Low");
-		menuDifficultyModerate = new MenuItem("Moderate");
-		menuDifficultyHigh = new MenuItem("High");
+		menuDifficultyLow = new CheckboxMenuItem("Low", false);
+		menuDifficultyModerate = new CheckboxMenuItem("Moderate", false);
+		menuDifficultyHigh = new CheckboxMenuItem("High", true);
 		menuDifficulty.add(menuDifficultyLow);
 		menuDifficulty.add(menuDifficultyModerate);
 		menuDifficulty.add(menuDifficultyHigh);

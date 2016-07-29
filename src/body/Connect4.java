@@ -52,11 +52,11 @@ public class Connect4 extends Frame implements BoardWindow
 		titleP.setLayout(new BorderLayout());
 		Font tfont = new Font("", Font.PLAIN, 35);
 		Panel titleLP1 = new Panel();
-		Label titleL1 = new Label("<FOUR IN A ROW> Ver 1.4");
+		Label titleL1 = new Label("FOUR IN A ROW");
 		titleL1.setFont(tfont);
 		
 		Panel titleLP2 = new Panel();
-		Label titleL2 = new Label("CREATED BY Kim, Inho 2012130888");
+		Label titleL2 = new Label("CREATED BY Arkainoh");
 		Button refresh = new Button("Refresh");
 		refresh.addActionListener(new ActionListener()
 		{

@@ -9,6 +9,9 @@ import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Label;
+import java.awt.Menu;
+import java.awt.MenuBar;
+import java.awt.MenuItem;
 import java.awt.Panel;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -36,6 +39,16 @@ public class Connect4 extends Frame implements BoardWindow
 	private int TURN;
 	private int stone_num; //현재 돌의 갯수
 	TurnChecker turnChecker;
+	private MenuBar menuBar; // 메뉴 막대
+	private Menu menuNewGame;
+	private Menu menuRefresh;
+	private Menu menuDifficulty;
+	
+	private MenuItem menuPlayerFirst;
+	private MenuItem menuAIFirst;
+	private MenuItem menuDifficultyLow; // 저장
+	private MenuItem menuDifficultyModerate; // 다른 이름으로 저장
+	private MenuItem menuDifficultyHigh; // 인쇄
 	
 	Label statL;
 	
@@ -48,6 +61,32 @@ public class Connect4 extends Frame implements BoardWindow
 		setLocation(res.width/2-WINDOW_SIZE_W/2,res.height/2-WINDOW_SIZE_H/2);
 		setResizable(false);
 		
+		//Menus
+		menuBar = new MenuBar();
+		setMenuBar(menuBar);
+		
+		menuNewGame = new Menu("New Game");
+		menuBar.add(menuNewGame);
+		//sub menu로 누가 먼저 할지 정하기
+		menuPlayerFirst = new MenuItem("Player First");
+		menuAIFirst = new MenuItem("AI First");
+		menuNewGame.add(menuPlayerFirst);
+		menuNewGame.add(menuAIFirst);
+		
+		
+		menuDifficulty = new Menu("Difficulty");
+		menuBar.add(menuDifficulty);
+		//sub menu로 상, 중, 하 - 체크 그룹으로 만들기!!!
+		menuDifficultyLow = new MenuItem("Low");
+		menuDifficultyModerate = new MenuItem("Moderate");
+		menuDifficultyHigh = new MenuItem("High");
+		menuDifficulty.add(menuDifficultyLow);
+		menuDifficulty.add(menuDifficultyModerate);
+		menuDifficulty.add(menuDifficultyHigh);
+		
+		menuRefresh = new Menu("Refresh");
+		menuBar.add(menuRefresh);
+
 		Panel titleP = new Panel();
 		titleP.setLayout(new BorderLayout());
 		Font tfont = new Font("", Font.PLAIN, 35);

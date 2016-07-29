@@ -91,7 +91,6 @@ public class Connect4 extends Frame implements BoardWindow
 						put(URPLAYING, tmp);
 				}
 			});
-
 			buttonsP.add(b,i);
 		}
 		
@@ -102,7 +101,6 @@ public class Connect4 extends Frame implements BoardWindow
 		repaint();
 		//setVisible(true);
 		
-		
 		addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent e){
 				System.exit(0);
@@ -111,13 +109,10 @@ public class Connect4 extends Frame implements BoardWindow
 	}
 	
 	void start() { //Game Start
-		//show window to choose 
-		
-		InitDialog initDialog = new InitDialog();
-		
-		setVisible(true);
-		//call init(1 or 2)
-		
+		//show window to choose
+		InitDialog initDialog = new InitDialog(this);
+		setVisible(true); //Show the game window
+		init(initDialog.getTurn());
 	}
 	
 	void init(int PLAYING){ //보드를 초기화한다.
@@ -218,7 +213,6 @@ public class Connect4 extends Frame implements BoardWindow
 			TURN = (player == 1)?2:1;
 		//print();
 	}
-	
 	
 	private void gameover() { //게임이 끝났는지 체크해준다.
 		int result = ScoreChecker.getWinner(board ,stone_num);

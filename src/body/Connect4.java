@@ -100,7 +100,7 @@ public class Connect4 extends Frame implements BoardWindow
 		add("North",titleP);
 		add("South", statP);
 		repaint();
-		setVisible(true);
+		//setVisible(true);
 		
 		
 		addWindowListener(new WindowAdapter(){
@@ -110,6 +110,15 @@ public class Connect4 extends Frame implements BoardWindow
 		});
 	}
 	
+	void start() { //Game Start
+		//show window to choose 
+		
+		InitDialog initDialog = new InitDialog();
+		
+		setVisible(true);
+		//call init(1 or 2)
+		
+	}
 	
 	void init(int PLAYING){ //보드를 초기화한다.
 		if(PLAYING != 1 && PLAYING !=2) return;
@@ -130,6 +139,7 @@ public class Connect4 extends Frame implements BoardWindow
 		}
 		turnChecker = new TurnChecker(this);
 		turnChecker.start();
+
 	}
 
 	public void paint(Graphics g) { //View 부분
@@ -250,7 +260,8 @@ public class Connect4 extends Frame implements BoardWindow
 	
 	public static void main(String[] args) { //테스트용 메인 함수
 		Connect4 co4 = new Connect4();
-		co4.init(1);
+		co4.start();
+		//co4.init(1);
 		//co4.print();
 	}
 

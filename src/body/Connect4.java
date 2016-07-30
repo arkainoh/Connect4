@@ -231,11 +231,8 @@ public class Connect4 extends Frame implements BoardWindow
 		this.URPLAYING = (PLAYING == 1)? 2:1;
 		
 		if(MYPLAYING == 1) {
-			int flag = (int)(Math.random()*2);
-			if(flag==0)
-				put(MYPLAYING, 0, 5);
-			else
-				put(MYPLAYING, 0, 1);
+			int startingPoint = (int)(Math.random()*5) + 1;
+			put(MYPLAYING, 0, startingPoint);
 		}
 
 		turnChecker = new TurnChecker(this);

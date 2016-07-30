@@ -13,7 +13,6 @@ public class WinnerChecker implements BoardWindow{
 		this.stone_num = obj.getStoneNum();
 	}
 	
-	
 	public int getWinner() {
 		board = obj.getBoard(); //board의 상태를 업데이트해준다.
 		

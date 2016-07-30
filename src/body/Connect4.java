@@ -17,6 +17,8 @@ import java.awt.Panel;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -28,7 +30,6 @@ import interfaces.BoardWindow;
 public class Connect4 extends Frame implements BoardWindow
 {
 	private static final long serialVersionUID = -8157243558265538348L;
-	
 	private int[][] board;
 	/*
 	 * ~~~~~ (ROWS-1,COLS-1)
@@ -42,7 +43,7 @@ public class Connect4 extends Frame implements BoardWindow
 	TurnChecker turnChecker;
 	private MenuBar menuBar; // 메뉴 막대
 	private Menu menuNewGame;
-	private Menu menuRefresh;
+	private Menu menuDebug;
 	private Menu menuDifficulty;
 	
 	private MenuItem menuPlayerFirst;
@@ -50,6 +51,7 @@ public class Connect4 extends Frame implements BoardWindow
 	private CheckboxMenuItem menuDifficultyLow; // 저장
 	private CheckboxMenuItem menuDifficultyModerate; // 다른 이름으로 저장
 	private CheckboxMenuItem menuDifficultyHigh; // 인쇄
+	private MenuItem menuRefresh;
 	
 	Label statL;
 	
@@ -74,20 +76,68 @@ public class Connect4 extends Frame implements BoardWindow
 		menuNewGame.add(menuPlayerFirst);
 		menuNewGame.add(menuAIFirst);
 		
-		
 		menuDifficulty = new Menu("Difficulty");
 		menuBar.add(menuDifficulty);
 		//sub menu로 상, 중, 하 - 체크 그룹으로 만들기!!!
+		
 		menuDifficultyLow = new CheckboxMenuItem("Low", false);
 		menuDifficultyModerate = new CheckboxMenuItem("Moderate", false);
 		menuDifficultyHigh = new CheckboxMenuItem("High", true);
 		menuDifficulty.add(menuDifficultyLow);
 		menuDifficulty.add(menuDifficultyModerate);
 		menuDifficulty.add(menuDifficultyHigh);
-		
-		menuRefresh = new Menu("Refresh");
-		menuBar.add(menuRefresh);
 
+		menuDifficultyLow.addItemListener(new ItemListener()
+		{
+			public void itemStateChanged(ItemEvent e) {
+				if(menuDifficultyLow.getState()) {
+					System.out.println("Set Difficulty : Low");
+					menuDifficultyModerate.setState(false);
+					menuDifficultyHigh.setState(false);
+				} else {
+					menuDifficultyLow.setState(true);
+				}
+			}
+		});
+		menuDifficultyModerate.addItemListener(new ItemListener()
+		{
+			public void itemStateChanged(ItemEvent e) {
+				if(menuDifficultyModerate.getState()) {
+					System.out.println("Set Difficulty : Moderate");
+					menuDifficultyLow.setState(false);
+					menuDifficultyHigh.setState(false);
+				} else {
+					menuDifficultyModerate.setState(true);
+				}
+			}
+		});
+		menuDifficultyHigh.addItemListener(new ItemListener()
+		{
+			public void itemStateChanged(ItemEvent e) {
+				if(menuDifficultyHigh.getState()) {
+					System.out.println("Set Difficulty : High");
+					menuDifficultyModerate.setState(false);
+					menuDifficultyLow.setState(false);
+				} else {
+					menuDifficultyHigh.setState(true);
+				}
+			}
+		});
+		
+		menuDebug = new Menu("Debug");
+		menuBar.add(menuDebug);
+		menuRefresh = new MenuItem("Refresh");
+		
+		menuRefresh.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e){
+				System.out.println("Refresh");
+				repaint();
+			}
+		});
+		menuDebug.add(menuRefresh);
+		
+		
 		Panel titleP = new Panel();
 		titleP.setLayout(new BorderLayout());
 		Font tfont = new Font("", Font.PLAIN, 35);
@@ -97,13 +147,7 @@ public class Connect4 extends Frame implements BoardWindow
 		
 		Panel titleLP2 = new Panel();
 		Label titleL2 = new Label("CREATED BY Arkainoh");
-		Button refresh = new Button("Refresh");
-		refresh.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e){
-				repaint();
-			}
-		});
+
 		titleLP2.setBackground(Color.LIGHT_GRAY);
 		
 		Panel buttonsP = new Panel();
@@ -115,7 +159,6 @@ public class Connect4 extends Frame implements BoardWindow
 		
 		titleLP1.add(titleL1);
 		titleLP2.add(titleL2);
-		titleLP2.add(refresh);
 		titleP.add("North", titleLP1);
 		titleP.add("Center", titleLP2);
 		titleP.add("South",buttonsP);
@@ -138,6 +181,8 @@ public class Connect4 extends Frame implements BoardWindow
 		
 		add("North",titleP);
 		add("South", statP);
+		
+		//add("Center", )
 		repaint();
 		//setVisible(true);
 		
@@ -161,7 +206,6 @@ public class Connect4 extends Frame implements BoardWindow
 		board = new int[ROWS][COLS];
 		this.MYPLAYING = PLAYING;
 		this.URPLAYING = (PLAYING == 1)? 2:1;
-		
 		
 		stone_num=0;
 		if(MYPLAYING == 1) {

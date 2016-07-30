@@ -2,6 +2,7 @@ package head;
 
 import java.util.List;
 
+import body.Connect4;
 import interfaces.BoardWindow;
 
 public class WhereToPut implements BoardWindow{
@@ -9,7 +10,7 @@ public class WhereToPut implements BoardWindow{
 	public static int NEGATIVE_INFINITY=Integer.MIN_VALUE;
 
 	static int z = 0;
-	public static int evaluate(int player, int[][] board, int stoneNum) {
+	public static int evaluate(int player, int[][] board, int stoneNum, int DIFFICULTY) {
 		long startTime = System.currentTimeMillis();
 		long endTime;
 		/*
@@ -28,31 +29,35 @@ public class WhereToPut implements BoardWindow{
 		int switchedPlayer = (player==1)?2:1;
 		StateNode rootNode = new StateNode(switchedPlayer, board, stoneNum);
 		
-		//돌의 갯수에 따라 depth를 증가시켜주는 로직
-		if(stoneNum >= 26) {
-			depth = 14;
-			System.out.println("depth" + depth + "로 증가");
-		}
-		else if(stoneNum >= 24) {
-			depth = 13;
-			System.out.println("depth" + depth + "로 증가");
-		}
-		else if(stoneNum >= 20) {
-			depth = 12;
-			System.out.println("depth" + depth + "로 증가");
-		}
-		else if(stoneNum >= 16){
-			depth = 11;
-			System.out.println("depth" + depth + "로 증가");
-		}
-		else if(stoneNum >=12) {
-			depth = 10;
-			System.out.println("depth" + depth + "로 증가");
-		} else if (stoneNum >=8){
-			depth = 9;
-			System.out.println("depth" + depth + "로 증가");
-		} else
-			depth = 8;
+		if(DIFFICULTY == Connect4.HIGH) {
+			//돌의 갯수에 따라 depth를 증가시켜주는 로직
+			if(stoneNum >= 26) {
+				depth = 14;
+				System.out.println("depth" + depth + "로 증가");
+			}
+			else if(stoneNum >= 24) {
+				depth = 13;
+				System.out.println("depth" + depth + "로 증가");
+			}
+			else if(stoneNum >= 20) {
+				depth = 12;
+				System.out.println("depth" + depth + "로 증가");
+			}
+			else if(stoneNum >= 16){
+				depth = 11;
+				System.out.println("depth" + depth + "로 증가");
+			}
+			else if(stoneNum >=12) {
+				depth = 10;
+				System.out.println("depth" + depth + "로 증가");
+			} else if (stoneNum >=8){
+				depth = 9;
+				System.out.println("depth" + depth + "로 증가");
+			} else
+				depth = 8;
+		} else if (DIFFICULTY == Connect4.MODERATE) depth = 5;
+		else depth = 2;
+		
 		//이기는 것 검사
 		StateNode testNode1 = new StateNode(switchedPlayer, board, stoneNum);
 		testNode1.generateChildren();
@@ -90,13 +95,13 @@ public class WhereToPut implements BoardWindow{
 			}
 		}
 		//debug
-		System.out.print(++z + ": ");
+		System.out.print("LOG: ["+ (++z) + "] ");
 		for(StateNode haha : rootNode.getChildren()){
-			System.out.print(haha.getScore()+"/");
+			System.out.print(haha.getScore()+" ");
 		}
-		System.out.println("=>"+(result+1)+"번 column 선택");
+		System.out.println("\n     Column "+(result+1)+" Selected");
 		endTime = System.currentTimeMillis();
-		System.out.println("elapsed time : "+ (endTime-startTime) + "milliseconds");
+		System.out.println("     elapsed time : "+ (endTime-startTime) + "milliseconds");
 		return result;
 	}
 	private static void newABPruningMinimax(StateNode root, int depth) {

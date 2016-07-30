@@ -2,6 +2,7 @@ package body;
 
 import java.awt.BorderLayout;
 import java.awt.Button;
+import java.awt.CheckboxMenuItem;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -9,10 +10,15 @@ import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Label;
+import java.awt.Menu;
+import java.awt.MenuBar;
+import java.awt.MenuItem;
 import java.awt.Panel;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -24,7 +30,6 @@ import interfaces.BoardWindow;
 public class Connect4 extends Frame implements BoardWindow
 {
 	private static final long serialVersionUID = -8157243558265538348L;
-	
 	private int[][] board;
 	/*
 	 * ~~~~~ (ROWS-1,COLS-1)
@@ -35,18 +40,114 @@ public class Connect4 extends Frame implements BoardWindow
 	private int URPLAYING;
 	private int TURN;
 	private int stone_num; //현재 돌의 갯수
+	private int DIFFICULTY;
+	public static final int LOW = 0; 
+	public static final int MODERATE = 1;
+	public static final int HIGH = 2;
+	
 	TurnChecker turnChecker;
+	private MenuBar menuBar; // 메뉴 막대
+	private Menu menuNewGame;
+	private Menu menuDebug;
+	private Menu menuDifficulty;
+	
+	private MenuItem menuPlayerFirst;
+	private MenuItem menuAIFirst;
+	private CheckboxMenuItem menuDifficultyLow; // 저장
+	private CheckboxMenuItem menuDifficultyModerate; // 다른 이름으로 저장
+	private CheckboxMenuItem menuDifficultyHigh; // 인쇄
+	private MenuItem menuRefresh;
 	
 	Label statL;
 	
 	public Connect4() {
-		TURN = 1;
-		board = new int[ROWS][COLS];
+		
 		setTitle("Four in a row");
 		setSize(WINDOW_SIZE_W,WINDOW_SIZE_H);
 		Dimension res = Toolkit.getDefaultToolkit().getScreenSize();
 		setLocation(res.width/2-WINDOW_SIZE_W/2,res.height/2-WINDOW_SIZE_H/2);
 		setResizable(false);
+		
+		//Menus
+		menuBar = new MenuBar();
+		setMenuBar(menuBar);
+		
+		menuNewGame = new Menu("New Game");
+		menuBar.add(menuNewGame);
+		//sub menu로 누가 먼저 할지 정하기
+		menuPlayerFirst = new MenuItem("Player First");
+		menuAIFirst = new MenuItem("AI First");
+		menuNewGame.add(menuPlayerFirst);
+		menuNewGame.add(menuAIFirst);
+		menuPlayerFirst.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e){
+				System.out.println("New Game : Player First");
+				restart(2);
+			}
+		});
+		menuAIFirst.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e){
+				System.out.println("New Game : AI First");
+				restart(1);
+			}
+		});
+		
+		menuDifficulty = new Menu("Difficulty");
+		menuBar.add(menuDifficulty);
+		//sub menu로 상, 중, 하 - 체크 그룹으로 만들기!!!
+		
+		menuDifficultyLow = new CheckboxMenuItem("Low", false);
+		menuDifficultyModerate = new CheckboxMenuItem("Moderate", false);
+		menuDifficultyHigh = new CheckboxMenuItem("High", true);
+		menuDifficulty.add(menuDifficultyLow);
+		menuDifficulty.add(menuDifficultyModerate);
+		menuDifficulty.add(menuDifficultyHigh);
+
+		menuDifficultyLow.addItemListener(new ItemListener()
+		{
+			public void itemStateChanged(ItemEvent e) {
+				if(menuDifficultyLow.getState()) {
+					setDifficulty(LOW);
+				} else {
+					menuDifficultyLow.setState(true);
+				}
+			}
+		});
+		menuDifficultyModerate.addItemListener(new ItemListener()
+		{
+			public void itemStateChanged(ItemEvent e) {
+				if(menuDifficultyModerate.getState()) {
+					setDifficulty(MODERATE);
+				} else {
+					menuDifficultyModerate.setState(true);
+				}
+			}
+		});
+		menuDifficultyHigh.addItemListener(new ItemListener()
+		{
+			public void itemStateChanged(ItemEvent e) {
+				if(menuDifficultyHigh.getState()) {
+					setDifficulty(HIGH);
+				} else {
+					menuDifficultyHigh.setState(true);
+				}
+			}
+		});
+		
+		menuDebug = new Menu("Debug");
+		menuBar.add(menuDebug);
+		menuRefresh = new MenuItem("Refresh");
+		
+		menuRefresh.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e){
+				System.out.println("Refresh");
+				repaint();
+			}
+		});
+		menuDebug.add(menuRefresh);
 		
 		Panel titleP = new Panel();
 		titleP.setLayout(new BorderLayout());
@@ -57,13 +158,7 @@ public class Connect4 extends Frame implements BoardWindow
 		
 		Panel titleLP2 = new Panel();
 		Label titleL2 = new Label("CREATED BY Arkainoh");
-		Button refresh = new Button("Refresh");
-		refresh.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e){
-				repaint();
-			}
-		});
+
 		titleLP2.setBackground(Color.LIGHT_GRAY);
 		
 		Panel buttonsP = new Panel();
@@ -75,7 +170,6 @@ public class Connect4 extends Frame implements BoardWindow
 		
 		titleLP1.add(titleL1);
 		titleLP2.add(titleL2);
-		titleLP2.add(refresh);
 		titleP.add("North", titleLP1);
 		titleP.add("Center", titleLP2);
 		titleP.add("South",buttonsP);
@@ -98,6 +192,8 @@ public class Connect4 extends Frame implements BoardWindow
 		
 		add("North",titleP);
 		add("South", statP);
+		
+		//add("Center", )
 		repaint();
 		//setVisible(true);
 		
@@ -115,26 +211,32 @@ public class Connect4 extends Frame implements BoardWindow
 		init(initDialog.getTurn());
 	}
 	
+	void restart(int PLAYING) { //Restart
+		TURN = -1;
+		turnChecker.stop();
+		turnChecker = null;
+		init(PLAYING);
+		repaint();
+	}
+	
 	void init(int PLAYING){ //보드를 초기화한다.
 		if(PLAYING != 1 && PLAYING !=2) return;
-		
+		TURN = 1;
+		stone_num=0;
+		setDifficulty(HIGH);
+		menuDifficultyHigh.setState(true);
+		board = null;
 		board = new int[ROWS][COLS];
 		this.MYPLAYING = PLAYING;
 		this.URPLAYING = (PLAYING == 1)? 2:1;
 		
-		
-		stone_num=0;
 		if(MYPLAYING == 1) {
-			int flag = (int)(Math.random()*2);
-			if(flag==0)
-				put(MYPLAYING, 0, 5);
-			else
-				put(MYPLAYING, 0, 1);
-			
+			int startingPoint = (int)(Math.random()*5) + 1;
+			put(MYPLAYING, 0, startingPoint);
 		}
+
 		turnChecker = new TurnChecker(this);
 		turnChecker.start();
-
 	}
 
 	public void paint(Graphics g) { //View 부분
@@ -149,14 +251,14 @@ public class Connect4 extends Frame implements BoardWindow
 		switch(TURN) { //누구의 turn인지 알려주는 부분
 		case 1:
 			if(MYPLAYING==TURN)
-				statL.setText("Player 1(CPU)'s turn...");
+				statL.setText("Player 1(AI)'s turn...");
 			else
 				statL.setText("Player 1's turn...");
 			statL.setBackground(Color.red);
 			break;
 		case 2:
 			if(MYPLAYING==TURN)
-				statL.setText("Player 2(CPU)'s turn...");
+				statL.setText("Player 2(AI)'s turn...");
 			else
 				statL.setText("Player 2's turn...");
 			statL.setBackground(Color.yellow);
@@ -247,6 +349,29 @@ public class Connect4 extends Frame implements BoardWindow
 		}
 	}
 	
+	public void setDifficulty(int dif) {
+		switch(dif) {
+		case LOW: //low
+			System.out.println("Set Difficulty : LOW");
+			menuDifficultyModerate.setState(false);
+			menuDifficultyHigh.setState(false);
+			DIFFICULTY = LOW;
+			break;
+		case MODERATE: //moderate
+			System.out.println("Set Difficulty : MODERATE");
+			menuDifficultyHigh.setState(false);
+			menuDifficultyLow.setState(false);
+			DIFFICULTY = MODERATE;
+			break;
+		case HIGH: //high
+			System.out.println("Set Difficulty : High");
+			menuDifficultyModerate.setState(false);
+			menuDifficultyLow.setState(false);
+			DIFFICULTY = HIGH;
+			break;
+		}
+	}
+	public int getDifficulty() {return DIFFICULTY;}
 	public int getStoneNum() {return stone_num;}
 	public int getMyplaying() {return MYPLAYING;}
 	public int getTurn() {return TURN;}

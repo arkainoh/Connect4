@@ -90,13 +90,13 @@ public class WhereToPut implements BoardWindow{
 			}
 		}
 		//debug
-		System.out.print(++z + ": ");
+		System.out.print("LOG: ["+ (++z) + "] ");
 		for(StateNode haha : rootNode.getChildren()){
-			System.out.print(haha.getScore()+"/");
+			System.out.print(haha.getScore()+" ");
 		}
-		System.out.println("=>"+(result+1)+"¹ø column ¼±ÅÃ");
+		System.out.println("\n     Column "+(result+1)+" Selected");
 		endTime = System.currentTimeMillis();
-		System.out.println("elapsed time : "+ (endTime-startTime) + "milliseconds");
+		System.out.println("     elapsed time : "+ (endTime-startTime) + "milliseconds");
 		return result;
 	}
 	private static void newABPruningMinimax(StateNode root, int depth) {

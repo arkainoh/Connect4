@@ -40,6 +40,11 @@ public class Connect4 extends Frame implements BoardWindow
 	private int URPLAYING;
 	private int TURN;
 	private int stone_num; //현재 돌의 갯수
+	private int DIFFICULTY;
+	public static final int LOW = 0; 
+	public static final int MODERATE = 1;
+	public static final int HIGH = 2;
+	
 	TurnChecker turnChecker;
 	private MenuBar menuBar; // 메뉴 막대
 	private Menu menuNewGame;
@@ -104,9 +109,7 @@ public class Connect4 extends Frame implements BoardWindow
 		{
 			public void itemStateChanged(ItemEvent e) {
 				if(menuDifficultyLow.getState()) {
-					System.out.println("Set Difficulty : Low");
-					menuDifficultyModerate.setState(false);
-					menuDifficultyHigh.setState(false);
+					setDifficulty(LOW);
 				} else {
 					menuDifficultyLow.setState(true);
 				}
@@ -116,9 +119,7 @@ public class Connect4 extends Frame implements BoardWindow
 		{
 			public void itemStateChanged(ItemEvent e) {
 				if(menuDifficultyModerate.getState()) {
-					System.out.println("Set Difficulty : Moderate");
-					menuDifficultyLow.setState(false);
-					menuDifficultyHigh.setState(false);
+					setDifficulty(MODERATE);
 				} else {
 					menuDifficultyModerate.setState(true);
 				}
@@ -128,9 +129,7 @@ public class Connect4 extends Frame implements BoardWindow
 		{
 			public void itemStateChanged(ItemEvent e) {
 				if(menuDifficultyHigh.getState()) {
-					System.out.println("Set Difficulty : High");
-					menuDifficultyModerate.setState(false);
-					menuDifficultyLow.setState(false);
+					setDifficulty(HIGH);
 				} else {
 					menuDifficultyHigh.setState(true);
 				}
@@ -224,7 +223,8 @@ public class Connect4 extends Frame implements BoardWindow
 		if(PLAYING != 1 && PLAYING !=2) return;
 		TURN = 1;
 		stone_num=0;
-		
+		setDifficulty(HIGH);
+		menuDifficultyHigh.setState(true);
 		board = null;
 		board = new int[ROWS][COLS];
 		this.MYPLAYING = PLAYING;
@@ -251,14 +251,14 @@ public class Connect4 extends Frame implements BoardWindow
 		switch(TURN) { //누구의 turn인지 알려주는 부분
 		case 1:
 			if(MYPLAYING==TURN)
-				statL.setText("Player 1(CPU)'s turn...");
+				statL.setText("Player 1(AI)'s turn...");
 			else
 				statL.setText("Player 1's turn...");
 			statL.setBackground(Color.red);
 			break;
 		case 2:
 			if(MYPLAYING==TURN)
-				statL.setText("Player 2(CPU)'s turn...");
+				statL.setText("Player 2(AI)'s turn...");
 			else
 				statL.setText("Player 2's turn...");
 			statL.setBackground(Color.yellow);
@@ -349,6 +349,29 @@ public class Connect4 extends Frame implements BoardWindow
 		}
 	}
 	
+	public void setDifficulty(int dif) {
+		switch(dif) {
+		case LOW: //low
+			System.out.println("Set Difficulty : LOW");
+			menuDifficultyModerate.setState(false);
+			menuDifficultyHigh.setState(false);
+			DIFFICULTY = LOW;
+			break;
+		case MODERATE: //moderate
+			System.out.println("Set Difficulty : MODERATE");
+			menuDifficultyHigh.setState(false);
+			menuDifficultyLow.setState(false);
+			DIFFICULTY = MODERATE;
+			break;
+		case HIGH: //high
+			System.out.println("Set Difficulty : High");
+			menuDifficultyModerate.setState(false);
+			menuDifficultyLow.setState(false);
+			DIFFICULTY = HIGH;
+			break;
+		}
+	}
+	public int getDifficulty() {return DIFFICULTY;}
 	public int getStoneNum() {return stone_num;}
 	public int getMyplaying() {return MYPLAYING;}
 	public int getTurn() {return TURN;}

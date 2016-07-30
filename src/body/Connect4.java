@@ -56,8 +56,7 @@ public class Connect4 extends Frame implements BoardWindow
 	Label statL;
 	
 	public Connect4() {
-		TURN = 1;
-		board = new int[ROWS][COLS];
+		
 		setTitle("Four in a row");
 		setSize(WINDOW_SIZE_W,WINDOW_SIZE_H);
 		Dimension res = Toolkit.getDefaultToolkit().getScreenSize();
@@ -75,6 +74,20 @@ public class Connect4 extends Frame implements BoardWindow
 		menuAIFirst = new MenuItem("AI First");
 		menuNewGame.add(menuPlayerFirst);
 		menuNewGame.add(menuAIFirst);
+		menuPlayerFirst.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e){
+				System.out.println("New Game : Player First");
+				restart(2);
+			}
+		});
+		menuAIFirst.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e){
+				System.out.println("New Game : AI First");
+				restart(1);
+			}
+		});
 		
 		menuDifficulty = new Menu("Difficulty");
 		menuBar.add(menuDifficulty);
@@ -136,7 +149,6 @@ public class Connect4 extends Frame implements BoardWindow
 			}
 		});
 		menuDebug.add(menuRefresh);
-		
 		
 		Panel titleP = new Panel();
 		titleP.setLayout(new BorderLayout());
@@ -200,25 +212,34 @@ public class Connect4 extends Frame implements BoardWindow
 		init(initDialog.getTurn());
 	}
 	
+	void restart(int PLAYING) { //Restart
+		TURN = -1;
+		turnChecker.stop();
+		turnChecker = null;
+		init(PLAYING);
+		repaint();
+	}
+	
 	void init(int PLAYING){ //보드를 초기화한다.
 		if(PLAYING != 1 && PLAYING !=2) return;
+		TURN = 1;
+		stone_num=0;
 		
+		board = null;
 		board = new int[ROWS][COLS];
 		this.MYPLAYING = PLAYING;
 		this.URPLAYING = (PLAYING == 1)? 2:1;
 		
-		stone_num=0;
 		if(MYPLAYING == 1) {
 			int flag = (int)(Math.random()*2);
 			if(flag==0)
 				put(MYPLAYING, 0, 5);
 			else
 				put(MYPLAYING, 0, 1);
-			
 		}
+
 		turnChecker = new TurnChecker(this);
 		turnChecker.start();
-
 	}
 
 	public void paint(Graphics g) { //View 부분

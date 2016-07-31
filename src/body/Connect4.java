@@ -41,6 +41,7 @@ public class Connect4 extends Frame implements BoardWindow
 	private int TURN;
 	private int stone_num; //현재 돌의 갯수
 	private int DIFFICULTY;
+	
 	public static final int LOW = 0; 
 	public static final int MODERATE = 1;
 	public static final int HIGH = 2;
@@ -208,23 +209,27 @@ public class Connect4 extends Frame implements BoardWindow
 		//show window to choose
 		InitDialog initDialog = new InitDialog(this);
 		setVisible(true); //Show the game window
-		init(initDialog.getTurn());
+		init(initDialog.getTurn(), initDialog.getDifficulty());
 	}
 	
 	void restart(int PLAYING) { //Restart
 		TURN = -1;
-		turnChecker.stop();
-		turnChecker = null;
-		init(PLAYING);
+		if(turnChecker != null){
+			turnChecker.stop();
+			turnChecker = null;
+		}
+		
+		init(PLAYING, getDifficulty());
 		repaint();
 	}
 	
-	void init(int PLAYING){ //보드를 초기화한다.
+	void init(int PLAYING, int difficulty){ //보드를 초기화한다.
 		if(PLAYING != 1 && PLAYING !=2) return;
 		TURN = 1;
 		stone_num=0;
-		setDifficulty(HIGH);
-		menuDifficultyHigh.setState(true);
+		
+
+		setDifficulty(difficulty);
 		board = null;
 		board = new int[ROWS][COLS];
 		this.MYPLAYING = PLAYING;
@@ -353,18 +358,21 @@ public class Connect4 extends Frame implements BoardWindow
 		switch(dif) {
 		case LOW: //low
 			System.out.println("Set Difficulty : LOW");
+			if(menuDifficultyLow.getState() == false) menuDifficultyLow.setState(true);
 			menuDifficultyModerate.setState(false);
 			menuDifficultyHigh.setState(false);
 			DIFFICULTY = LOW;
 			break;
 		case MODERATE: //moderate
 			System.out.println("Set Difficulty : MODERATE");
+			if(menuDifficultyModerate.getState() == false) menuDifficultyModerate.setState(true);
 			menuDifficultyHigh.setState(false);
 			menuDifficultyLow.setState(false);
 			DIFFICULTY = MODERATE;
 			break;
 		case HIGH: //high
 			System.out.println("Set Difficulty : High");
+			if(menuDifficultyHigh.getState() == false) menuDifficultyHigh.setState(true);
 			menuDifficultyModerate.setState(false);
 			menuDifficultyLow.setState(false);
 			DIFFICULTY = HIGH;
@@ -380,8 +388,6 @@ public class Connect4 extends Frame implements BoardWindow
 	public static void main(String[] args) { //테스트용 메인 함수
 		Connect4 co4 = new Connect4();
 		co4.start();
-		//co4.init(1);
-		//co4.print();
 	}
 
 }

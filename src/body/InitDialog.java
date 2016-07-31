@@ -34,7 +34,7 @@ public class InitDialog{
 		Toolkit tk = Toolkit.getDefaultToolkit();
 		Dimension screenSize = tk.getScreenSize();
 		
-		info = new Dialog(f, "Four in a row", true);
+		info = new Dialog(f, "Connect4", true);
 		info.setSize(WIDTH,HEIGHT);
 		info.setLocation(screenSize.width/2 - WIDTH/2, screenSize.height/2 - HEIGHT/2);
 		info.setLayout(new FlowLayout());;

@@ -9,6 +9,7 @@ import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Label;
 import java.awt.Menu;
 import java.awt.MenuBar;
@@ -21,6 +22,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.net.URL;
 
 import javax.swing.JOptionPane;
 
@@ -58,14 +60,18 @@ public class Connect4 extends Frame implements BoardWindow
 	private CheckboxMenuItem menuDifficultyModerate; // 다른 이름으로 저장
 	private CheckboxMenuItem menuDifficultyHigh; // 인쇄
 	private MenuItem menuRefresh;
-	
+	private Toolkit tk;
+	private Image ArkainohLogo;
+	private int logo_W;
+	private int logo_H;
 	Label statL;
 	
 	public Connect4() {
 		
-		setTitle("Four in a row");
+		setTitle("Connect4");
 		setSize(WINDOW_SIZE_W,WINDOW_SIZE_H);
-		Dimension res = Toolkit.getDefaultToolkit().getScreenSize();
+		tk = Toolkit.getDefaultToolkit();
+		Dimension res = tk.getScreenSize();
 		setLocation(res.width/2-WINDOW_SIZE_W/2,res.height/2-WINDOW_SIZE_H/2);
 		setResizable(false);
 		
@@ -149,6 +155,8 @@ public class Connect4 extends Frame implements BoardWindow
 			}
 		});
 		menuDebug.add(menuRefresh);
+		URL url = getClass().getResource("/Logo with letters_Whitened.png");
+		ArkainohLogo = tk.getImage(url);
 		
 		Panel titleP = new Panel();
 		titleP.setLayout(new BorderLayout());
@@ -159,7 +167,6 @@ public class Connect4 extends Frame implements BoardWindow
 		
 		Panel titleLP2 = new Panel();
 		Label titleL2 = new Label("CREATED BY Arkainoh");
-
 		titleLP2.setBackground(Color.LIGHT_GRAY);
 		
 		Panel buttonsP = new Panel();
@@ -171,9 +178,8 @@ public class Connect4 extends Frame implements BoardWindow
 		
 		titleLP1.add(titleL1);
 		titleLP2.add(titleL2);
-		titleP.add("North", titleLP1);
-		titleP.add("Center", titleLP2);
-		titleP.add("South",buttonsP);
+		//titleP.add("North", titleLP1);
+		//titleP.add("Center", titleLP2);
 		for(int i=0; i<COLS; i++) {
 			Button b = new Button();
 			final int tmp=i;
@@ -188,10 +194,10 @@ public class Connect4 extends Frame implements BoardWindow
 			});
 			buttonsP.add(b,i);
 		}
-		
+		statP.add("North", buttonsP);
 		statP.add("Center", statL);
-		
-		add("North",titleP);
+
+		//add("North",titleP);
 		add("South", statP);
 		
 		//add("Center", )
@@ -245,6 +251,13 @@ public class Connect4 extends Frame implements BoardWindow
 	}
 
 	public void paint(Graphics g) { //View 부분
+		if(ArkainohLogo != null){
+			logo_W = ArkainohLogo.getWidth(this);
+			logo_H = ArkainohLogo.getHeight(this);
+			g.drawImage(ArkainohLogo,(WINDOW_SIZE_W-logo_W)/2,(190-logo_H)-27,this);
+
+		}
+		
 		g.setColor(Color.BLUE);
 		g.fillRect(BOARD_X, BOARD_Y, BOARD_W, BOARD_H);
 		g.setColor(Color.WHITE);

@@ -24,7 +24,8 @@
 
 -----------
 #### Getting Started:
-- Download the exe directory if you merely want to try playing the game. It consists of two executable jar files.
+- Download the exe directory if you merely want to try playing the game. It consists of one executable jar file. I recommend you to download up-to-date Java on your desktop. <br>
+In order to execute jar file, type `java -jar Connect4AI.jar` on terminal.
 - Download the whole files in your desktop and import it to your Eclipse IDE. It will make you be able to modify the codes.
 
 -----------

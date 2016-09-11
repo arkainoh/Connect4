@@ -3,6 +3,10 @@
 #### Abstract:
 - Connect4 game with AI.
 
+----
+#### Demo:
+- [https://youtu.be/coafJ3iYaBc](https://youtu.be/coafJ3iYaBc)
+
 -----------
 #### Development Environment:
 - Eclipse Java EE IDE for Web Developers.
